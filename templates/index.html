@@ -110,9 +110,40 @@ body {
     opacity: 0.85;
 }
 
+.topic-item.topic-disabled {
+    cursor: pointer;
+}
+
 .topic-selected {
     box-shadow: 0 0 0 2px #ffc107 inset;
     font-weight: 600;
+}
+
+.topic-details {
+    display: none;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    background: #fff;
+    padding: 10px;
+}
+
+.topic-select-btn {
+    width: 100%;
+}
+
+.topic-select-btn.topic-selected {
+    background: #198754;
+    color: #fff;
+    border-color: #198754;
+}
+
+.topic-locked-input {
+    background: #e9ecef;
+    font-weight: 600;
+}
+
+.topic-lock-hint {
+    display: none;
 }
 
 .confirm-modal {
@@ -163,21 +194,45 @@ function toggleTopics(){
     section.style.display = (section.style.display === "none") ? "block" : "none";
 }
 
-function selectTopic(element, topic){
-    document.querySelectorAll(".topic-item").forEach(item=>{
+function toggleTopicDetails(detailsId){
+    const details = document.getElementById(detailsId);
+    if (!details) {
+        return;
+    }
+
+    const wasVisible = details.style.display === "block";
+    document.querySelectorAll(".topic-details").forEach(section => {
+        section.style.display = "none";
+    });
+    details.style.display = wasVisible ? "none" : "block";
+}
+
+function selectTopic(topic, selectButtonId){
+    document.querySelectorAll(".topic-select-btn").forEach(item => {
         item.classList.remove("topic-selected");
-        if (!item.classList.contains("topic-submitted")) {
-            item.disabled = false;
-            item.classList.remove("topic-disabled");
-            item.classList.add("topic-available");
-        }
     });
 
-    element.classList.remove("topic-available");
-    element.classList.add("topic-selected", "topic-disabled");
-    element.disabled = true;
-    document.getElementById("topicInput").value = topic;
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const selectedButton = document.getElementById(selectButtonId);
+    if (selectedButton) {
+        selectedButton.classList.add("topic-selected");
+    }
+
+    const topicInput = document.getElementById("topicInput");
+    if (topicInput) {
+        topicInput.value = topic;
+        topicInput.readOnly = true;
+        topicInput.classList.add("topic-locked-input");
+    }
+
+    const lockHint = document.getElementById("topicLockHint");
+    if (lockHint) {
+        lockHint.style.display = "block";
+    }
+
+    if (topicInput) {
+        topicInput.scrollIntoView({ behavior: "smooth", block: "center" });
+        topicInput.focus();
+    }
 }
 
 function confirmSubmit(event){
@@ -348,27 +403,37 @@ setInterval(function () {
 </div>
 
 <div class="text-center mb-3">
-    <button type="button" class="btn btn-dark px-4" onclick="toggleTopics()" {% if not selected_division_open %}disabled{% endif %}>Related Topics</button>
+    <button type="button" class="btn btn-dark px-4" onclick="toggleTopics()" {% if not selected_division_open %}disabled{% endif %}>Select Topics</button>
 </div>
 
 {% if selected_division_open %}
 <div id="topicsSection" style="display:none;" class="glass-card mb-4">
-    <h5 class="text-center mb-3">{{ selected_subject.name }} Topics (Div {{ selected_division }})</h5>
+    <h5 class="text-center mb-3">{{ selected_subject.name }} Topics (Common for All Divisions)</h5>
     <div class="row">
-        {% for topic in all_topics %}
-        {% set topic_key = topic|lower|replace(' ', '') %}
-        {% set is_submitted = topic_key in submitted_topics %}
+        {% for topic in topic_options %}
         <div class="col-md-6 mb-2">
-            <button
-                type="button"
-                class="topic-item {% if is_submitted %}topic-disabled topic-submitted{% else %}topic-available{% endif %}"
-                {% if is_submitted %}disabled{% else %}onclick='selectTopic(this, {{ topic|tojson }})'{% endif %}
-            >
-                {{ topic }}
-                {% if is_submitted %}
-                    <span class="badge text-bg-light ms-2">Submitted</span>
+            <button type="button"
+                class="topic-item {% if topic.is_submitted %}topic-disabled{% else %}topic-available{% endif %}"
+                onclick="toggleTopicDetails('topicDetails{{ loop.index }}')">
+                {{ topic.title }}
+                {% if topic.is_submitted %}
+                <span class="badge text-bg-light ms-2">Submitted</span>
                 {% endif %}
             </button>
+            <div id="topicDetails{{ loop.index }}" class="topic-details mt-2">
+                <p class="mb-2"><strong>{{ topic.title }}</strong></p>
+                <p class="mb-3">{{ topic.description }}</p>
+                {% if topic.is_submitted %}
+                <button type="button" class="btn btn-danger topic-select-btn" disabled>Already Submitted</button>
+                {% else %}
+                <button type="button"
+                    id="topicSelectBtn{{ loop.index }}"
+                    class="btn btn-outline-success topic-select-btn"
+                    onclick='selectTopic({{ topic.value|tojson }}, "topicSelectBtn{{ loop.index }}")'>
+                    Select Topic
+                </button>
+                {% endif %}
+            </div>
         </div>
         {% endfor %}
     </div>
@@ -391,6 +456,9 @@ setInterval(function () {
 
 <h6>Topic</h6>
 <input type="text" id="topicInput" name="topic" class="form-control mb-3" required>
+<small id="topicLockHint" class="text-muted topic-lock-hint mb-3 d-block">
+    Selected topic is locked. To change it, pick another topic from the Select Topics section.
+</small>
 
 {% for i in range(1,5) %}
 <div id="member{{i}}">

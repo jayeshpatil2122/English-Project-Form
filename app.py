@@ -564,23 +564,182 @@ SUBJECTS = [
         "key": DEFAULT_SUBJECT_KEY,
         "name": "Strategic Communication for Professionals",
         "faculty": "Dr.Rani Sarode",
-        "deadline": "December 31, 2026 23:59:59",
+        "deadline": "March 13, 2026 23:59:59",
         "topics": [
-            "Crisis Communication Plan for a Brand",
-            "Corporate Social Media Communication Strategy",
-            "Public Relations Campaign for Product Launch",
-            "Internal Communication Model for Employee Engagement",
-            "Communication Plan for Change Management",
-            "Strategic Communication for Startup Pitching",
-            "Community Outreach Communication Strategy",
-            "Cross-Cultural Communication in Global Teams",
-            "Data-Driven Communication Dashboard",
-            "Brand Storytelling Framework",
-            "Reputation Management Communication Strategy",
-            "Strategic Communication for Non-Profit Awareness",
-            "Influencer Communication Strategy",
-            "Leadership Communication Plan",
-            "Communication Audit for an Organization",
+            {
+                "title": "Organize a Mini Group Discussion",
+                "description": (
+                    "Students conduct a GD on a trending topic, record the session, "
+                    "and prepare a self-evaluation report."
+                ),
+            },
+            {
+                "title": "Panel Discussion Simulation",
+                "description": (
+                    "Students form a panel with defined roles (moderator, panellists) "
+                    "and conduct a formal discussion."
+                ),
+            },
+            {
+                "title": "GD Technique Handbook",
+                "description": (
+                    "Create a handbook of '10 Best GD Strategies' with examples and "
+                    "illustrations."
+                ),
+            },
+            {
+                "title": "Active Listening Analysis",
+                "description": (
+                    "Observe a live/recorded debate or interview and identify examples "
+                    "of constructive listening and poor listening."
+                ),
+            },
+            {
+                "title": "Barriers to Group Communication Project",
+                "description": (
+                    "Survey peers, identify communication barriers faced in teams, and "
+                    "propose solutions."
+                ),
+            },
+            {
+                "title": "Persuasion Case Study",
+                "description": (
+                    "Choose a real case where persuasion changed an outcome and analyze "
+                    "techniques used and ethics involved."
+                ),
+            },
+            {
+                "title": "Negotiation Role-Play",
+                "description": (
+                    "Students perform a negotiation scenario (salary negotiation, "
+                    "conflict negotiation, business deal, etc.) and record it."
+                ),
+            },
+            {
+                "title": "Influence vs. Manipulation Poster",
+                "description": (
+                    "Create an infographic differentiating ethical influence and "
+                    "manipulation with real-world examples."
+                ),
+            },
+            {
+                "title": "EI-Based Influence Journal",
+                "description": (
+                    "Maintain a journal documenting how emotional intelligence "
+                    "influenced interactions over one week."
+                ),
+            },
+            {
+                "title": "Public Speaking for Influence",
+                "description": (
+                    "Deliver a 2-minute persuasive speech and track audience response."
+                ),
+            },
+            {
+                "title": "Personal Resilience Plan",
+                "description": (
+                    "Students design a step-by-step resilience-building plan for "
+                    "personal or academic challenges."
+                ),
+            },
+            {
+                "title": "Adaptability Challenge Video",
+                "description": (
+                    "Try a new skill or unfamiliar task for 48-72 hours and document "
+                    "the experience."
+                ),
+            },
+            {
+                "title": "Growth Mindset Reflection Booklet",
+                "description": (
+                    "Prepare a reflective booklet on replacing fixed-mindset beliefs "
+                    "with growth-mindset approaches."
+                ),
+            },
+            {
+                "title": "Workplace Change Case Study",
+                "description": (
+                    "Analyze how a company successfully navigated change "
+                    "(e.g., remote work shift, layoffs, digital transformation)."
+                ),
+            },
+            {
+                "title": "Resilience Interview Project",
+                "description": (
+                    "Interview a teacher/professional about how they overcame setbacks "
+                    "and summarize insights."
+                ),
+            },
+            {
+                "title": "Ethical Dilemma Analysis",
+                "description": (
+                    "Present a real/fictional workplace dilemma and propose ethical "
+                    "solutions using decision-making models."
+                ),
+            },
+            {
+                "title": "Code of Ethics Drafting Project",
+                "description": (
+                    "Develop a simple code of ethics for a student club, department, "
+                    "or startup."
+                ),
+            },
+            {
+                "title": "Case Study: Breaking Ethical Norms",
+                "description": (
+                    "Analyze a corporate ethics scandal (Enron, Volkswagen, Satyam, "
+                    "etc.) and identify ethical failures."
+                ),
+            },
+            {
+                "title": "Integrity in Daily Life Diary",
+                "description": (
+                    "Maintain a 5-day diary identifying how integrity influenced "
+                    "everyday decisions."
+                ),
+            },
+            {
+                "title": "Ethics Debate Project",
+                "description": (
+                    "Conduct a classroom debate on topics such as 'Profit vs Ethics' "
+                    "or 'Whistleblowing: Duty or Betrayal?'."
+                ),
+            },
+            {
+                "title": "Professional Etiquette Manual",
+                "description": (
+                    "Create a manual covering workplace dress code, email etiquette, "
+                    "meeting etiquette, etc."
+                ),
+            },
+            {
+                "title": "Mock Meeting Simulation",
+                "description": (
+                    "Conduct a formal meeting simulation with agenda, minutes, roles, "
+                    "and etiquette assessment."
+                ),
+            },
+            {
+                "title": "Office Environment Observation Project",
+                "description": (
+                    "Observe etiquette in a real or virtual office setting and report "
+                    "professional behaviors and violations."
+                ),
+            },
+            {
+                "title": "Career Portfolio and LinkedIn Optimization",
+                "description": (
+                    "Build a professional digital portfolio including resume, bio, "
+                    "achievements, and LinkedIn improvements."
+                ),
+            },
+            {
+                "title": "Team Culture Building Activity",
+                "description": (
+                    "Design a short activity or initiative to improve workplace/team "
+                    "culture (icebreaker, motivation board, etc.)."
+                ),
+            },
         ],
     }
 ]
@@ -750,6 +909,35 @@ def clean_text(value):
     return re.sub(r"\s+", "", (value or "").lower())
 
 
+def build_topic_options(topics, submitted_topics):
+    options = []
+    for topic in topics:
+        if isinstance(topic, dict):
+            title = str(topic.get("title") or "").strip()
+            description = str(topic.get("description") or "").strip()
+            value = str(topic.get("value") or title).strip()
+        else:
+            value = str(topic or "").strip()
+            title = value
+            description = ""
+
+        if not value:
+            continue
+        if not title:
+            title = value
+
+        topic_key = clean_text(value)
+        options.append(
+            {
+                "title": title,
+                "description": description,
+                "value": value,
+                "is_submitted": topic_key in submitted_topics,
+            }
+        )
+    return options
+
+
 def clean_words(value):
     lowered = (value or "").lower()
     lowered = re.sub(r"[^a-z\s]", "", lowered)
@@ -887,7 +1075,7 @@ def index():
             access_message=access_message,
             show_access_gate=True,
             access_division=prefill_division,
-            all_topics=all_topics,
+            topic_options=build_topic_options(all_topics, set()),
             submitted_topics=set(),
             selected_subject=selected_subject,
             selected_subject_key=selected_subject_key,
@@ -935,7 +1123,7 @@ def index():
             access_message=access_message,
             show_access_gate=False,
             access_division=selected_division,
-            all_topics=all_topics,
+            topic_options=build_topic_options(all_topics, submitted_topics),
             submitted_topics=submitted_topics,
             selected_subject=selected_subject,
             selected_subject_key=selected_subject_key,
