@@ -563,7 +563,7 @@ SUBJECTS = [
     {
         "key": DEFAULT_SUBJECT_KEY,
         "name": "Strategic Communication for Professionals",
-        "faculty": "Rani Sarode mam",
+        "faculty": "Dr.Rani Sarode",
         "deadline": "December 31, 2026 23:59:59",
         "topics": [
             "Crisis Communication Plan for a Brand",
