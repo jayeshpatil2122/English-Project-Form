@@ -561,10 +561,11 @@ DIVISION_PRN_WHITELIST = {
 
 SUBJECTS = [
     {
+        #timer update nd teacher details 
         "key": DEFAULT_SUBJECT_KEY,
         "name": "Strategic Communication for Professionals",
         "faculty": "Dr.Rani Sarode",
-        "deadline": "March 13, 2026 23:59:59",
+        "deadline": "April 2, 2026 23:59:59",
         "topics": [
             {
                 "title": "Organize a Mini Group Discussion",
